@@ -18,4 +18,4 @@ const arrayPush = (xs, x) => {
 // input
 const test = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-console.log(transduce(xform, arrayPush, [], test))
+console.log(transduce(xform, arrayPush, [], test)) // => [0, 4, 8, 12, 16]
