@@ -1,40 +1,29 @@
-// common functions
+// hypertext
 
-const markup = tag => (...attrs) => (...children) => {
+const h = (tag, attrs, ...children) => {
   const el = document.createElement(tag)
-  attrs.forEach(a => el.setAttributeNode(a))
-  children.forEach(child => el.appendChild(child))
+  const keys = typeof attrs === 'object' ? Object.keys(attrs) : []
+  if (keys.length !== 0) {
+    keys.forEach(k => {
+      const a = document.createAttribute(k)
+      a.value = attrs[k]
+      el.setAttributeNode(a)
+    })
+  }
+  children.forEach(c => {
+    c instanceof Node 
+      ? el.appendChild(c)
+      : el.appendChild(document.createTextNode(c))
+  })
   return el
 }
 
-const attr = key => value => {
-  const a = document.createAttribute(key)
-  a.value = value
-  return a
-}
+const test = h('div', {class: 'test', style: 'color: red;'}, 
+                h('span', {style: 'color: blue;'}, 'nested blue text'),
+                h('h1', {}, 'Title'),
+             'red text')
 
-const text = t => document.createTextNode(t)
-
-// const appendNode = parent => child => parent.appendChild(child)
-
-
-
-// example
-
-// elements
-const div = markup('div')
-const span = markup('span')
-
-// attributes
-const style = attr('style')
-
-const example = div(style('color: red;'))
-const nested = span(style())
-
-const exText = text('Hello')
-const exampleWithText = example(exText)
-
-// const appendToExample = appendNode(exampleWithText)
-// appendToExample(nested)
-
-console.log(exampleWithText)
+console.time()
+const mount = document.getElementById('app')
+mount.appendChild(test)
+console.timeEnd()

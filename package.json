@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "serve:ui": "live-server examples/ui"
+    "serve:ui": "live-server examples/ui --port=4321"
   },
   "devDependencies": {
     "jest": "^23.5.0",
