@@ -1,15 +1,12 @@
-// hypertext
-
-const h = (tag, attrs, ...children) => {
+const h = (...args) => {
+  const [tag, attrs, ...children] = args
+  const attrsKeys = Object.keys(attrs) || []
   const el = document.createElement(tag)
-  const keys = typeof attrs === 'object' ? Object.keys(attrs) : []
-  if (keys.length !== 0) {
-    keys.forEach(k => {
+  attrsKeys.forEach(k => {
       const a = document.createAttribute(k)
       a.value = attrs[k]
       el.setAttributeNode(a)
-    })
-  }
+  })
   children.forEach(c => {
     c instanceof Node 
       ? el.appendChild(c)
@@ -24,6 +21,6 @@ const test = h('div', {class: 'test', style: 'color: red;'},
              'red text')
 
 console.time()
-const mount = document.getElementById('app')
-mount.appendChild(test)
+const mountpoint = document.getElementById('app')
+mountpoint.appendChild(test)
 console.timeEnd()
