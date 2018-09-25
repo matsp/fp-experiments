@@ -1,38 +1,40 @@
 import { h } from './utils.js'
 
 const state = {
-    data: () => {
-      let res = []
-      for (let i = 0; i<=1000;i++) {
-        res.push(Math.random().toString(36).substring(2, 15))
-      }
-      return res
+  data: () => {
+    let res = []
+    for (let i = 0; i <= 1000; i++) {
+      res.push(Math.random().toString(36).substring(2, 15))
     }
+    return res
   }
+}
 
-const createOberservable = (observable, {onGet, onSet}) => {
-  const interceptor = {
+const createOberservable = (target, listener) => {
+  let observable
+  const handler = {
     get (target, key) {
-      onGet(key)
       return target[key]
     },
     set (target, prop, value) {
-      onSet(prop, value)
+      target[prop] = value
+      listener(observable)
       return true
     }
   }
-  return new Proxy(observable, interceptor)
+  observable = new Proxy(target, handler)
+  return observable
 }
 
-const obj = {
+const initialState = {
   title: 'hello'
 }
 
-const store = createOberservable(obj, {
-  onGet(key) {
+const store = createOberservable(initialState, {
+  onGet (key) {
     console.log(`calling get on ${key}`)
   },
-  onSet(prop, value) {
+  onSet (prop, value) {
     console.log(`calling set on ${prop} with value ${value}`)
   }
 })
@@ -41,13 +43,11 @@ console.log(store.title)
 
 store.title = 'title'
 
-
-
 console.time('rendering 1000 nodes')
 
 const listComponent = state => {
   const list = children => h('ul', {}, ...children)
-  const data = state.data().map(d => h('li', {style: 'color: red;'}, d))
+  const data = state.data().map(d => h('li', { style: 'color: red;' }, d))
   return list(data)
 }
 
