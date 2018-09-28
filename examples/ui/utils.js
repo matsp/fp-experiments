@@ -1,3 +1,6 @@
+/**
+ * Create element tree
+ */
 export const h = (tag, attrs, ...children) => {
   const attrsKeys = Object.keys(attrs)
   const el = document.createElement(tag)
@@ -14,6 +17,9 @@ export const h = (tag, attrs, ...children) => {
   return el
 }
 
+/**
+ * Make the given target obj reactive by calling the listener on changes
+ */
 export const createOberservable = ({ target, listener }) => {
   let observable
   const handler = {
@@ -30,8 +36,12 @@ export const createOberservable = ({ target, listener }) => {
   return observable
 }
 
+/**
+ * Custom dom updating function creation
+ */
 export const updateDOM = rootID => (...renderingFns) => state => {
   const rootNode = document.getElementById(rootID)
   // TODO: cache rendered nodes
-  renderingFns.forEach(r => rootNode.appendChild(r(state)))
+  const rendered = renderingFns.map(r => r(state))
+  rendered.forEach(node => rootNode.appendChild(node))
 }
