@@ -41,7 +41,6 @@ export const createOberservable = ({ target, listener }) => {
  */
 export const updateDOM = rootID => (...renderingFns) => state => {
   const rootNode = document.getElementById(rootID)
-  // TODO: cache rendered nodes
   const rendered = renderingFns.map(r => r(state))
   rendered.forEach(node => rootNode.appendChild(node))
 }
