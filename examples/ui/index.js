@@ -1,6 +1,6 @@
 import { h, createOberservable, updateDOM } from './utils.js'
 
-const state = {
+const initialState = {
   // data: () => {
   //   let res = []
   //   for (let i = 0; i <= 1000; i++) {
@@ -22,15 +22,14 @@ const listComponent = state => {
 // customized functions
 const updateMountpoint = updateDOM('app')
 const updateComponents = updateMountpoint(listComponent)
-const stateObservable = createOberservable({ target: state, listener: updateComponents })
+const stateObservable = createOberservable({ target: initialState, listener: updateComponents })
 
 // first render
-console.time(`rendering ${state.data.length} nodes`)
-updateComponents(stateObservable)
-console.timeEnd(`rendering ${state.data.length} nodes`)
 console.log(stateObservable)
+console.time(`first rendering`)
+updateComponents(stateObservable)
+console.timeEnd(`first rendering`)
 
 console.time(`update state -> rerender`)
-stateObservable.data.push('99', '100')
-console.log(stateObservable)
+stateObservable.data.push('99')
 console.timeEnd(`update state -> rerender`)
