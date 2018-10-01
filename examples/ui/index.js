@@ -14,6 +14,7 @@ const state = {
 // rendering fn
 const listComponent = state => {
   const list = children => h('ul', {}, ...children)
+  console.log(`state.data looks like: ${state.data}`)
   const data = state.data.map(d => h('li', { style: 'color: red;' }, d))
   return list(data)
 }
@@ -27,3 +28,9 @@ const stateObservable = createOberservable({ target: state, listener: updateComp
 console.time(`rendering ${state.data.length} nodes`)
 updateComponents(stateObservable)
 console.timeEnd(`rendering ${state.data.length} nodes`)
+console.log(stateObservable)
+
+console.time(`update state -> rerender`)
+stateObservable.data.push('99', '100')
+console.log(stateObservable)
+console.timeEnd(`update state -> rerender`)
