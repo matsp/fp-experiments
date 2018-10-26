@@ -5,14 +5,14 @@ const transduce = (xform, reducing, initial, input) => input.reduce(xform(reduci
 
 // transformation
 const xform = pipe(
-    mapping(x => x * 2), 
-    filtering(x => x % 2 === 0)
+  mapping(x => x * 2),
+  filtering(x => x % 2 === 0)
 )
 
 // reducer
 const arrayPush = (xs, x) => {
-    xs.push(x)
-    return xs
+  xs.push(x)
+  return xs
 }
 
 // input
