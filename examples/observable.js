@@ -1,4 +1,3 @@
-
 const createObserver = handlers => ({
   _handlers: handlers,
   _isUnsubscribed: false,
