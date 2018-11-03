@@ -28,28 +28,27 @@ async function * control (input, dispatch) {
   const menu = {}
   for await (const i of input) {
     yield i
-    if (i.type === 'MENU_ITEM')
-      {menu[i.index] = React.cloneElement(i.value, {key:i.index})}
-    else if (i.type === 'VALUE')
-      {yield {type:"CONTROL",
-             value: <p>
+    if (i.type === 'MENU_ITEM') { menu[i.index] = React.cloneElement(i.value, { key: i.index }) } else if (i.type === 'VALUE') {
+      yield { type: 'CONTROL',
+        value: <p>
              Clicked: {i.value} times
-             <button onClick={() =>
-               dispatch({type:"INCREMENT"})}>
+          <button onClick={() =>
+            dispatch({ type: 'INCREMENT' })}>
              +
-             </button>
-             <button onClick={() =>
-                dispatch({type:"DECREMENT"})}>
+          </button>
+          <button onClick={() =>
+            dispatch({ type: 'DECREMENT' })}>
              -
-             </button>
-             {Object.values(menu)}
-             </p>}}
+          </button>
+          {Object.values(menu)}
+        </p> }
+    }
   }
 }
 
 async function * incrementAsync (input, dispatch) {
   yield { type: 'MENU_ITEM',
-index: 100,
+    index: 100,
     value: <button
       onClick={
         () => setTimeout(
@@ -62,13 +61,15 @@ index: 100,
 
 async function * incrementIfOdd (input, dispatch) {
   for await (const i of input) {
-    if (i.type === 'VALUE')
-      {yield { type: "MENU_ITEM", index: 200,
-              value: <button
-              onClick={() => 
-                i.value % 2 && dispatch({type:"INCREMENT"})}>
+    if (i.type === 'VALUE') {
+      yield { type: 'MENU_ITEM',
+        index: 200,
+        value: <button
+          onClick={() =>
+            i.value % 2 && dispatch({ type: 'INCREMENT' })}>
               Increment if Odd
-              </button> }}
+        </button> }
+    }
     yield i
   }
 }
@@ -76,8 +77,7 @@ async function * incrementIfOdd (input, dispatch) {
 async function * render (input) {
   const el = document.getElementById('root')
   for await (const i of input) {
-    if (i.type === 'CONTROL')
-      {ReactDOM.render(i.value,el)}
+    if (i.type === 'CONTROL') { ReactDOM.render(i.value, el) }
     yield i
   }
 }
@@ -86,10 +86,9 @@ async function run (main) {
   let callback
   const queue = []
 
-  const producer = (async function* producer() {
-    for(;;) {
-      while(queue.length)
-        yield queue.shift()
+  const producer = (async function * producer () {
+    for (;;) {
+      while (queue.length) { yield queue.shift() }
       await new Promise(i => callback = i)
       callback = null
     }
