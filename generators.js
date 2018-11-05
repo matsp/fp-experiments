@@ -2,15 +2,14 @@
 const arrayPromise = () => new Promise(resolve => setTimeout(() => resolve([1, 2, 3, 4, 5]), 500))
 const delayPromise = () => new Promise(resolve => setTimeout(() => resolve(), 1000))
 
-
 /**
  * Pipelining functions.
  */
 const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x)
 
-///////////////
-///////////////
-///////////////
+/// ////////////
+/// ////////////
+/// ////////////
 
 /**
  * Map for async iterators.
@@ -30,29 +29,56 @@ const filter = predicate => async function * (iterable) {
   }
 }
 
-///////////////
-///////////////
-///////////////
+/// ////////////
+/// ////////////
+/// ////////////
 
-const run = pipeline => {
+const run = async (pipeline) => {
   let cb = null
   let queue = []
 
-  const producer = async function * () {
-    while(true) {
-      if (queue.length > 0) yield queue.shift()
-      await new Promise(res => cb = resolve)
-      cb = null
+  const producer = (async function * () {
+    while (true) {
+      while (queue.length) {
+        yield queue.shift()
+        await new Promise(resolve => { cb = resolve })
+        cb = null
+      }
     }
-  }()
+  }())
 
   const dispatch = action => {
-    if (cb) callback()
+    if (cb) cb()
     queue.push(action)
   }
 
-  for await(const action of pipeline({action: producer, dispatch: dispatch}))
+  // for await (const action of pipeline({ action: producer, dispatch: dispatch })) {}
+  for await (const action of pipeline()) {}
 }
+
+const testGen = async function * (actions) {
+  yield { type: 'test', value: 'test' }
+}
+
+const test2Gen = async function * (actions) {
+  for await (const action of actions) {
+    console.log(action)
+    yield action
+  }
+}
+
+const test3Gen = async function * (actions) {
+  for await (const action of actions) {
+    console.log(action)
+  }
+}
+
+const pipeline = pipe(
+  testGen,
+  test2Gen,
+  test3Gen
+)
+run(pipeline)
 
 /**
  * Creates async iterable from iterable data e.g. array.
@@ -88,7 +114,7 @@ const run = pipeline => {
 //   for await (const item of arrayObserver) {
 //     console.log(item)
 //   }
-}
+// }
 
 // print()
 

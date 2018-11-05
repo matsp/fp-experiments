@@ -41,7 +41,7 @@ async function * control (input, dispatch) {
              -
           </button>
           {Object.values(menu)}
-        </p> }
+        </p> }// yield {type: 'VALUE', value: 'test'}
     }
   }
 }
