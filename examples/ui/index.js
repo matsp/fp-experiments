@@ -1,5 +1,7 @@
 import { h, updateDOM } from './utils.js'
 
+import { pipe, createDispatcher, createDispatch } from './generators.js'
+
 let initialState = {
   data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 }
@@ -37,3 +39,38 @@ const updateComponents = updateMountpoint(listComponent, buttonComponent, render
 console.time(`first rendering`)
 updateComponents(initialState)
 console.timeEnd(`first rendering`)
+
+/// ///////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////
+
+const initial = async function * (actions) {
+  let state = {
+    text: 'initial state text'
+  }
+  yield { type: 'STATE', value: state }
+  for await (const action of actions) {
+    console.log(action)
+    yield action
+  }
+}
+
+const test2Gen = async function * (actions) {
+  for await (const action of actions) {
+    console.log(action)
+    yield action
+  }
+}
+
+const test3Gen = async function * (actions) {
+  for await (const action of actions) {
+    console.log(action)
+  }
+}
+
+const pipeline = pipe(initial, test2Gen, test3Gen)
+
+const dispatcher = createDispatcher(pipeline)
+const dispatch = createDispatch(dispatcher)
+
+dispatch({ type: 'TEST', value: 'dispatched action' })
