@@ -1,6 +1,6 @@
 import { h, updateDOM } from './utils.js'
 
-import { pipe, createDispatcher, createDispatch } from './generators.js'
+import { pipe, createPipelineDispatcher, dispatchActions } from './generators.js'
 
 let initialState = {
   data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
@@ -70,7 +70,7 @@ const test3Gen = async function * (actions) {
 
 const pipeline = pipe(initial, test2Gen, test3Gen)
 
-const dispatcher = createDispatcher(pipeline)
-const dispatch = createDispatch(dispatcher)
+const dispatcher = createPipelineDispatcher(pipeline)
+const dispatch = dispatchActions(dispatcher)
 
-dispatch({ type: 'TEST', value: 'dispatched action' })
+dispatch({ type: 'TEST', value: 'dispatched action' }, { type: 'TEST', value: '2nd dispatched action' })

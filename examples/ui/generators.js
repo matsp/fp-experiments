@@ -32,20 +32,20 @@ const filter = predicate => async function * (iterable) {
 /**
  * Creates an async iterator with action object-/s
  */
-const createActions = (...actions) => (async function * () { yield actions }())
+const createAction = action => (async function * () { yield action }())
 
 /**
  * Dispatch actions on pipeline.
  *
  * @param {*} pipeline
  */
-export const createDispatcher = pipeline =>
+export const createPipelineDispatcher = pipeline =>
   async function * (actions) {
-    for await (const action of createActions(actions)) {
+    for await (const action of createAction(actions)) {
       yield * pipeline(action)
     }
   }
 
-export const createDispatch = dispatcher => async (actions) => {
+export const dispatchActions = dispatcher => async (...actions) => {
   for await (const action of dispatcher(actions)) {}
 }
