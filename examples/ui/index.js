@@ -40,11 +40,9 @@ console.time(`first rendering`)
 updateComponents(initialState)
 console.timeEnd(`first rendering`)
 
-/// ///////////////////////////////////////////////////////
-/// ///////////////////////////////////////////////////////
-/// ///////////////////////////////////////////////////////
+// generator pipeline
 
-const initial = async function * (actions) {
+const firstGenerator = async function * (actions) {
   let state = {
     text: 'initial state text'
   }
@@ -55,22 +53,29 @@ const initial = async function * (actions) {
   }
 }
 
-const test2Gen = async function * (actions) {
+const secondGenerator = async function * (actions) {
   for await (const action of actions) {
     console.log(action)
     yield action
   }
 }
 
-const test3Gen = async function * (actions) {
+const thirdGenerator = async function * (actions) {
   for await (const action of actions) {
     console.log(action)
   }
 }
 
-const pipeline = pipe(initial, test2Gen, test3Gen)
+const pipeline = pipe(
+  firstGenerator,
+  secondGenerator,
+  thirdGenerator
+)
 
 const dispatcher = createPipelineDispatcher(pipeline)
 const dispatch = dispatchActions(dispatcher)
 
-dispatch({ type: 'TEST', value: 'dispatched action' }, { type: 'TEST', value: '2nd dispatched action' })
+dispatch(
+  { type: 'TEST', value: 'dispatched action' },
+  { type: 'TEST', value: '2nd dispatched action' }
+)

@@ -28,3 +28,6 @@ export const updateDOM = rootID => (...renderingFns) => state => {
   const rendered = renderingFns.map(r => r(state))
   rendered.forEach(node => rootNode.appendChild(node))
 }
+
+// TODO: Add DOM manipulation functions for appending at the end or inserting at the front
+// of child list e.g.
