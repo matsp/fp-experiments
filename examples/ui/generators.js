@@ -46,6 +46,11 @@ export const createPipelineDispatcher = pipeline =>
     }
   }
 
+/**
+ * Create dispatcher function for specific dispatcher.
+ *
+ * @param {*} dispatcher
+ */
 export const dispatchActions = dispatcher => async (...actions) => {
   for await (const action of dispatcher(actions)) {}
 }
