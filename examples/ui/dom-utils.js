@@ -22,7 +22,7 @@ export const h = (tag, attrs, ...children) => {
  *
  * @param {*} rootID
  */
-export const clearDOM = rootID => {
+export const clearElement = rootID => {
   const rootNode = document.getElementById(rootID)
   while (rootNode.firstChild) {
     rootNode.removeChild(rootNode.firstChild)
@@ -34,7 +34,7 @@ export const clearDOM = rootID => {
  *
  * @param {*} rootID
  */
-export const appendDOM = rootID => elements => {
+export const appendElement = rootID => elements => {
   const rootNode = document.getElementById(rootID)
   rootNode.appendChild(elements)
 }
