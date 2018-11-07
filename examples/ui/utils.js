@@ -31,3 +31,15 @@ export const updateDOM = rootID => (...renderingFns) => state => {
 
 // TODO: Add DOM manipulation functions for appending at the end or inserting at the front
 // of child list e.g.
+
+export const clearDOM = rootID => {
+  const rootNode = document.getElementById(rootID)
+  while (rootNode.firstChild) {
+    rootNode.removeChild(rootNode.firstChild)
+  }
+}
+
+export const appendDOM = rootID => elementTree => {
+  const rootNode = document.getElementById(rootID)
+  rootNode.appendChild(elementTree)
+}

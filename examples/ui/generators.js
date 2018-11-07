@@ -3,13 +3,9 @@ const arrayPromise = () => new Promise(resolve => setTimeout(() => resolve([1, 2
 const delayPromise = () => new Promise(resolve => setTimeout(() => resolve(), 1000))
 
 /**
- * Pipelining functions.
+ * Pipeline functions with dispatch injection.
  */
-export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x)
-
-/// ////////////
-/// ////////////
-/// ////////////
+export const pipe = (...fns) => (x, dispatch) => fns.reduce((v, f) => f(v, dispatch), x)
 
 /**
  * Map for async iterators.
@@ -30,27 +26,23 @@ const filter = predicate => async function * (iterable) {
 }
 
 /**
- * Creates an async iterator with action object-/s
- */
-const createAction = action => (async function * () { yield action }())
-
-/**
- * Dispatch actions on pipeline.
+ * Kicks off pipeline and inject dispatch function.
  *
  * @param {*} pipeline
  */
-export const createPipelineDispatcher = pipeline =>
-  async function * (actions) {
-    for await (const action of createAction(actions)) {
-      yield * pipeline(action)
+export const runPipeline = async (pipeline) => {
+  let callback = null
+  const queue = []
+  const producer = (async function * producer () {
+    while (true) {
+      if (queue.length > 0) yield queue.shift()
+      await new Promise(resolve => { callback = resolve })
+      callback = null
     }
+  }())
+  const dispatch = action => {
+    if (callback) callback()
+    queue.push(action)
   }
-
-/**
- * Create dispatcher function for specific dispatcher.
- *
- * @param {*} dispatcher
- */
-export const dispatchActions = dispatcher => async (...actions) => {
-  for await (const action of dispatcher(actions)) {}
+  for await (const action of pipeline(producer, dispatch)) {}
 }

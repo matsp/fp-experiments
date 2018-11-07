@@ -1,81 +1,116 @@
-import { h, updateDOM } from './utils.js'
+import { h, updateDOM, appendDOM, clearDOM } from './utils.js'
 
-import { pipe, createPipelineDispatcher, dispatchActions } from './generators.js'
+import { pipe, runPipeline } from './generators.js'
 
-let initialState = {
-  data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-}
+// let initialState = {
+//   data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+// }
 
 // rendering fn aka component
-const listComponent = state => {
-  const list = children => h('ul', {}, ...children)
-  const data = state.data.map(d => h('li', { style: 'color: red;' }, d))
-  return list(data)
-}
+// const listComponent = state => {
+//   const list = children => h('ul', {}, ...children)
+//   const data = state.data.map(d => h('li', { style: 'color: red;' }, d))
+//   return list(data)
+// }
 
-const buttonComponent = state => {
-  return h('button', {
-    onClick: () => {
-      state.data.push('99')
-    }
-  }, 'add')
-}
+// const buttonComponent = state => {
+//   return h('button', {
+//     onClick: () => {
+//       state.data.push('99')
+//     }
+//   }, 'add')
+// }
 
-const renderComponent = state => {
-  return h('button', {
-    onClick: () => {
-      console.time(`update state -> rerender`)
-      updateComponents(state)
-      console.timeEnd(`update state -> rerender`)
-    }
-  }, 'render')
-}
+// const renderComponent = state => {
+//   return h('button', {
+//     onClick: () => {
+//       console.time(`update state -> rerender`)
+//       updateComponents(state)
+//       console.timeEnd(`update state -> rerender`)
+//     }
+//   }, 'render')
+// }
 
 // customized functions
-const updateMountpoint = updateDOM('app')
-const updateComponents = updateMountpoint(listComponent, buttonComponent, renderComponent)
+// const updateMountpoint = updateDOM('app')
+// const updateComponents = updateMountpoint(listComponent, buttonComponent, renderComponent)
 
 // first render
-console.time(`first rendering`)
-updateComponents(initialState)
-console.timeEnd(`first rendering`)
+// console.time(`first rendering`)
+// updateComponents(initialState)
+// console.timeEnd(`first rendering`)
 
 // generator pipeline
 
-const firstGenerator = async function * (actions) {
+const core = async function * (actions) {
   let state = {
-    text: 'initial state text'
+    list: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
   }
   yield { type: 'STATE', value: state }
   for await (const action of actions) {
-    console.log(action)
+    switch (action.type) {
+      case 'ADD_ITEM':
+        state.list.push(action.value)
+        yield { type: 'STATE', value: state }
+    }
     yield action
   }
 }
 
-const secondGenerator = async function * (actions) {
+const listComponent = async function * (actions) {
   for await (const action of actions) {
-    console.log(action)
+    switch (action.type) {
+      case 'STATE':
+        const list = children => h('ul', {}, ...children)
+        const data = action.value.list.map(d => h('li', { style: 'color: red;' }, d))
+        yield { type: 'COMPONENT', value: list(data) }
+        break
+    }
     yield action
   }
 }
 
-const thirdGenerator = async function * (actions) {
+const buttonComponent = async function * (actions, dispatch) {
+  for await (const action of actions) {
+    switch (action.type) {
+      case 'STATE':
+        yield {
+          type: 'COMPONENT',
+          value: h('button', {
+            onClick: () => {
+              dispatch({ type: 'ADD_ITEM', value: Math.floor(Math.random() * 100).toString() })
+            }
+          }, 'add')
+        }
+        break
+    }
+    yield action
+  }
+}
+
+const render = async function * (actions) {
+  for await (const action of actions) {
+    switch (action.type) {
+      case 'COMPONENT':
+        appendDOM('app')(action.value)
+        break
+    }
+    yield action
+  }
+}
+
+const logger = async function * (actions) {
   for await (const action of actions) {
     console.log(action)
   }
 }
 
 const pipeline = pipe(
-  firstGenerator,
-  secondGenerator,
-  thirdGenerator
+  core,
+  listComponent,
+  buttonComponent,
+  render,
+  logger
 )
 
-const dispatcher = createPipelineDispatcher(pipeline)
-const dispatch = dispatchActions(dispatcher)
-
-dispatch(
-  { type: 'TEST', value: 'dispatched action' },
-  { type: 'TEST', value: '2nd dispatched action' }
-)
+runPipeline(pipeline)
