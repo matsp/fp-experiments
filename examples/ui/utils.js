@@ -1,5 +1,5 @@
 /**
- * Create element tree
+ * Create element tree.
  */
 export const h = (tag, attrs, ...children) => {
   const attrsKeys = Object.keys(attrs)
@@ -18,20 +18,10 @@ export const h = (tag, attrs, ...children) => {
 }
 
 /**
- * Custom dom updating function creation
+ * Clear DOM at specific element id.
+ *
+ * @param {*} rootID
  */
-export const updateDOM = rootID => (...renderingFns) => state => {
-  const rootNode = document.getElementById(rootID)
-  while (rootNode.firstChild) {
-    rootNode.removeChild(rootNode.firstChild)
-  }
-  const rendered = renderingFns.map(r => r(state))
-  rendered.forEach(node => rootNode.appendChild(node))
-}
-
-// TODO: Add DOM manipulation functions for appending at the end or inserting at the front
-// of child list e.g.
-
 export const clearDOM = rootID => {
   const rootNode = document.getElementById(rootID)
   while (rootNode.firstChild) {
@@ -39,7 +29,12 @@ export const clearDOM = rootID => {
   }
 }
 
-export const appendDOM = rootID => elementTree => {
+/**
+ * Append elements at the end of a specific element id.
+ *
+ * @param {*} rootID
+ */
+export const appendDOM = rootID => elements => {
   const rootNode = document.getElementById(rootID)
-  rootNode.appendChild(elementTree)
+  rootNode.appendChild(elements)
 }
