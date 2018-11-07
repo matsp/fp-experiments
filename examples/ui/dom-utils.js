@@ -20,10 +20,10 @@ export const h = (tag, attrs, ...children) => {
 /**
  * Clear DOM at specific element id.
  *
- * @param {*} rootID
+ * @param {*} elementID
  */
-export const clearElement = rootID => {
-  const rootNode = document.getElementById(rootID)
+export const clearElement = elementID => {
+  const rootNode = document.getElementById(elementID)
   while (rootNode.firstChild) {
     rootNode.removeChild(rootNode.firstChild)
   }
@@ -32,9 +32,9 @@ export const clearElement = rootID => {
 /**
  * Append elements at the end of a specific element id.
  *
- * @param {*} rootID
+ * @param {*} elementID
  */
-export const appendElement = rootID => elements => {
-  const rootNode = document.getElementById(rootID)
+export const appendElement = elementID => elements => {
+  const rootNode = document.getElementById(elementID)
   rootNode.appendChild(elements)
 }
