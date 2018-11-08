@@ -1,4 +1,4 @@
-import { h, appendElements } from './dom-utils.js'
+import { h, appendElement, replaceElement, randomID } from './dom-utils.js'
 import { pipe, runPipeline } from './generators-utils.js'
 
 const core = async function * (actions) {
@@ -17,12 +17,13 @@ const core = async function * (actions) {
 }
 
 const listComponent = async function * (actions) {
+  const id = randomID()
   for await (const action of actions) {
     switch (action.type) {
       case 'STATE':
-        const list = children => h('ul', {}, ...children)
-        const data = action.value.list.map(d => h('li', { style: 'color: red;' }, d))
-        yield { type: 'COMPONENT', value: list(data) }
+        const list = children => h('ul', { id: id }, ...children)
+        const items = action.value.list.map(d => h('li', { style: 'color: red;' }, d))
+        yield { type: 'RENDER', id: id, value: list(items) }
         break
     }
     yield action
@@ -30,12 +31,15 @@ const listComponent = async function * (actions) {
 }
 
 const buttonComponent = async function * (actions, dispatch) {
+  const id = randomID()
   for await (const action of actions) {
     switch (action.type) {
       case 'STATE':
         yield {
-          type: 'COMPONENT',
+          type: 'RENDER',
+          id: id,
           value: h('button', {
+            id: id,
             onClick: () => {
               dispatch({ type: 'ADD_ITEM', value: Math.floor(Math.random() * 100).toString() })
             }
@@ -48,10 +52,16 @@ const buttonComponent = async function * (actions, dispatch) {
 }
 
 const render = async function * (actions) {
+  let cache = {}
   for await (const action of actions) {
     switch (action.type) {
-      case 'COMPONENT':
-        appendElements('app')(action.value)
+      case 'RENDER':
+        if (cache[action.id]) {
+          replaceElement(action.id)(action.value)
+        } else {
+          cache[action.id] = action.value
+          appendElement('app')(action.value)
+        }
         break
     }
     yield action

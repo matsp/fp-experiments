@@ -34,7 +34,23 @@ export const clearElement = elementID => {
  *
  * @param {*} elementID
  */
-export const appendElements = elementID => elements => {
+export const appendElement = elementID => element => {
   const rootNode = document.getElementById(elementID)
-  rootNode.appendChild(elements)
+  rootNode.appendChild(element)
 }
+
+/**
+ * Replace specific DOM element by id.
+ *
+ * @param {*} id
+ * @param {*} newElement
+ */
+export const replaceElement = id => newElement => {
+  const oldElement = document.getElementById(id)
+  oldElement.parentNode.replaceChild(newElement, oldElement)
+}
+
+/**
+ * Returns a random id for DOM elements.
+ */
+export const randomID = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
