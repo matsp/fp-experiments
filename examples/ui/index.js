@@ -1,4 +1,4 @@
-import { h, appendElement } from './dom-utils.js'
+import { h, appendElements } from './dom-utils.js'
 import { pipe, runPipeline } from './generators-utils.js'
 
 const core = async function * (actions) {
@@ -51,7 +51,7 @@ const render = async function * (actions) {
   for await (const action of actions) {
     switch (action.type) {
       case 'COMPONENT':
-        appendElement('app')(action.value)
+        appendElements('app')(action.value)
         break
     }
     yield action

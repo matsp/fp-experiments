@@ -34,7 +34,7 @@ export const clearElement = elementID => {
  *
  * @param {*} elementID
  */
-export const appendElement = elementID => elements => {
+export const appendElements = elementID => elements => {
   const rootNode = document.getElementById(elementID)
   rootNode.appendChild(elements)
 }
