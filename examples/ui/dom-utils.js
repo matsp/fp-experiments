@@ -30,13 +30,23 @@ export const clearElement = elementID => {
 }
 
 /**
- * Append elements at the end of a specific element id.
+ * Append element at a specific element with id.
  *
  * @param {*} elementID
  */
 export const appendElement = elementID => element => {
   const rootNode = document.getElementById(elementID)
   rootNode.appendChild(element)
+}
+
+/**
+ * Prepend element at a specific element with id.
+ *
+ * @param {*} elementID
+ */
+export const prependElement = elementID => element => {
+  const rootNode = document.getElementById(elementID)
+  rootNode.prepend(element)
 }
 
 /**
@@ -53,4 +63,5 @@ export const replaceElement = id => newElement => {
 /**
  * Returns a random id for DOM elements.
  */
-export const randomID = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+export const randomID = () =>
+  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
