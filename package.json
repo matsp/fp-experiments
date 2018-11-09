@@ -6,9 +6,7 @@
   "author": "Mats Pfeiffer <mats.pfeiffer@googlemail.com>",
   "license": "MIT",
   "private": true,
-  "scripts": {
-    "serve:ui": "live-server examples/ui --port=4321"
-  },
+  "scripts": {},
   "devDependencies": {
     "jest": "^23.6.0",
     "live-server": "^1.2.0",
