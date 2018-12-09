@@ -1,15 +1,10 @@
-// curry :: ((a, b, ...) -> c) -> a -> b -> ... -> c
-const curry = (fn) => {
-  const arity = fn.length
-
-  return function $curry (...args) {
-    if (args.length < arity) {
-      return $curry.bind(null, ...args)
-    }
-
-    return fn.call(null, ...args)
-  }
-}
+const curry = (
+  f, arr = []
+) => (...args) => (
+  a => a.length === f.length
+    ? f(...a)
+    : curry(f, a)
+)([...arr, ...args])
 
 // without helper function
 const add = a => b => a + b
