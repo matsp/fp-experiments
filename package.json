@@ -8,8 +8,8 @@
   "private": true,
   "scripts": {},
   "devDependencies": {
-    "jest": "^23.6.0",
-    "live-server": "^1.2.1",
-    "standard": "^12.0.1"
+    "jest": "23.6.0",
+    "live-server": "1.2.1",
+    "standard": "12.0.1"
   }
 }
